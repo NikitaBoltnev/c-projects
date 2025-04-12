@@ -1,0 +1,15 @@
+#include "../s21_decimal.h"
+
+int s21_floor(s21_decimal value, s21_decimal *result) {
+  if (!result) return 1;
+
+  // drops the scale
+  s21_truncate(value, result);
+
+  // processing negative numbers
+  if (s21_get_sign(value.bits[3]) && !s21_is_equal(value, *result)) {
+    s21_decimal one = {{1, 0, 0, 0}};
+    s21_sub(*result, one, result);
+  }
+  return 0;
+}

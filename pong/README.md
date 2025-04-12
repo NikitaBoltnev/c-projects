@@ -1,6 +1,7 @@
-Реализация игры в понг на языке си.
-Для компиляции использовать.
+Pong game implementation in C.
+To compile, use:
 `gcc -Wall -Werror -Wextra pong_interactive.c -lncurses -o pong_interactive`
-Управление левого игрока: `a/z`.
-Управление правого игрока:`k/m`.
-Игра завершается в случае, если один из игроков набрал 21 очко.
+Controls:
+Left player paddle: `a (up) / z (down)`
+Right player paddle: `k (up) / m (down)`
+The game ends when one of the players scores 21 points.
