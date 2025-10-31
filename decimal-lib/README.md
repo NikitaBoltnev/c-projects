@@ -1,118 +1,120 @@
-# s21_decimal 
+# s21_decimal Library Implementation
 
-Implementation of your own s21_decimal.h library.
+## Overview
 
-![s21_decimal](misc/images/s21_decimal.png)
+Developed a comprehensive decimal arithmetic library in C that provides precise financial calculations by implementing a custom decimal floating-point type. The library addresses the limitations of native floating-point types in financial applications where rounding errors are unacceptable.
 
-## Introduction
+## Core Functionality
 
-In this project, I implemented the s21_decimal.h library in C, adding support for the «decimal» type missing in the language standard. This type is crucial for financial calculations, where floating-point inaccuracies are unacceptable.
+### Decimal Type Implementation
+- Created a custom `s21_decimal` data structure with 128-bit binary representation
+- Implemented sign bit handling, 96-bit integer component, and scaling factor management
+- Supported decimal numbers range: -79,228,162,514,264,337,593,543,950,335 to +79,228,162,514,264,337,593,543,950,335
+- Designed efficient bit manipulation algorithms for decimal operations
 
+### Arithmetic Operations
+**Addition (`s21_add`)**
+- Implemented precise decimal addition with proper scaling alignment
+- Added overflow detection and error handling
+- Incorporated bank rounding for numbers exceeding mantissa capacity
 
-## Information
+**Subtraction (`s21_sub`)**
+- Developed signed subtraction with scaling factor consideration
+- Ensured proper handling of negative results and edge cases
 
-The Decimal value type represents decimal numbers from positive 79,228,162,514,264,337,593,543,950,335 to negative 79,228,162,514,264,337,593,543,950,335. The default value of a Decimal is 0. The Decimal value type is suitable for financial calculations that require a large number of significant integral and fractional digits and that do not have rounding errors. The Decimal type does not eliminate the need for rounding. Rather, it minimizes rounding errors.
+**Multiplication (`s21_mul`)**
+- Created efficient multiplication algorithm for 96-bit integers
+- Implemented scaling factor adjustment and overflow prevention
+- Added precision management for financial calculations
 
-When the result of the division and multiplication is passed to the Round method, the result suffers no loss of precision.
+**Division (`s21_div`)**
+- Built precise division algorithm with remainder handling
+- Implemented division by zero detection and error reporting
+- Added scaling factor normalization for accurate results
 
-A Decimal number is a floating point value that consists of a sign, a numerical value where each digit in the value ranges from 0 to 9, and a scaling factor that indicates the position of a floating decimal point that separates the integral and fractional parts of the numerical value.
+### Comparison Operations
+- **Less than (`s21_is_less`)**: Implemented signed comparison with scaling consideration
+- **Less or equal (`s21_is_less_or_equal`)**: Combined less than and equality checks
+- **Greater than (`s21_is_greater`)**: Reverse logic of less than comparison
+- **Greater or equal (`s21_is_greater_or_equal`)**: Comprehensive greater than or equal evaluation
+- **Equal (`s21_is_equal`)**: Bitwise comparison with scaling normalization
+- **Not equal (`s21_is_not_equal`)**: Inverse of equality check
 
-The binary representation of a Decimal value consists of a 1-bit sign, a 96-bit integer, and a scaling factor that is used to divide the 96-bit integer and specify what portion of it is a Decimal fraction. The scaling factor is implicitly the number 10 raised to an exponent between 0 and 28. Therefore, the binary representation of a Decimal value has the form ((-2^96 to 2^96) / 10^(0 to 28)), where -(2^96-1) is equal to MinValue and 2^96-1 is equal to MaxValue.
+### Type Conversion System
+**From Integer (`s21_from_int_to_decimal`)**
+- Efficient conversion from standard integer types to decimal representation
+- Sign handling and zero scaling for integer values
 
-The scaling factor can also preserve any trailing zeros in a Decimal number. Trailing zeros do not affect the value of a Decimal number in arithmetic or comparison operations. 
+**From Float (`s21_from_float_to_decimal`)**
+- Precise conversion of floating-point numbers to decimal format
+- Implemented significant digit extraction and rounding
+- Added error handling for out-of-range values and special cases (too small/large numbers)
 
+**To Integer (`s21_from_decimal_to_int`)**
+- Conversion with fractional part truncation
+- Overflow detection and error reporting
+- Sign preservation during conversion
 
-### Binary representation
+**To Float (`s21_from_decimal_to_float`)**
+- Accurate conversion maintaining precision within float limitations
+- Proper handling of scaling factors and significant digits
 
-The binary representation of a Decimal number consists of a 1-bit sign, a 96-bit integer number, and a scaling factor that is used to divide the integer number and specify what portion of it is a decimal fraction. The scaling factor is implicitly the number 10 raised to an exponent between 0 and 28.
+### Mathematical Functions
+**Floor (`s21_floor`)**
+- Rounding toward negative infinity
+- Proper handling of negative numbers and fractional parts
 
+**Round (`s21_round`)**
+- Banker's rounding implementation
+- Nearest integer rounding with tie-breaking rules
 
-### Arithmetic Operators
+**Truncate (`s21_truncate`)**
+- Discard fractional digits including trailing zeros
+- Maintain integer portion of decimal value
 
-| Operator name | Operators  | Function                                                                           | 
-| ------ | ------ |------------------------------------------------------------------------------------|
-| Addition | + | int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)         |
-| Subtraction | - | int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) |
-| Multiplication | * | int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) | 
-| Division | / | int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) |
+**Negate (`s21_negate`)**
+- Sign inversion operation
+- Efficient bit manipulation for sign change
 
-The functions return the error code:
-- 0 — OK;
-- 1 — the number is too large or equal to infinity;
-- 2 — the number is too small or equal to negative infinity;
-- 3 — division by 0.
+## Technical Implementation
 
-*Note on the numbers that do not fit into the mantissa:*
-- *When getting numbers that do not fit into the mantissa during arithmetic operations, use bank rounding (for example, 79,228,162,514,264,337,593,543,950,335 — 0.6 = 79,228,162,514,264,337,593,543,950,334)*
+### Error Handling System
+- Comprehensive error codes: 0 (OK), 1 (overflow), 2 (underflow), 3 (division by zero)
+- Consistent error reporting across all functions
+- Input validation and boundary checking
 
+### Memory and Performance Optimization
+- Efficient bit-level operations using bitwise manipulation
+- Minimal memory footprint with optimized data structures
+- Fast algorithms for common decimal operations
 
-### Comparison Operators
+### Testing and Quality Assurance
+- Developed extensive unit test suite using Check framework
+- Achieved over 80% code coverage verified with gcov
+- Created automated testing pipeline with Makefile
+- Generated detailed HTML coverage reports
 
-| Operator name | Operators  | Function | 
-| ------ | ------ | ------ |
-| Less than | < | int s21_is_less(s21_decimal, s21_decimal) |
-| Less than or equal to | <= | int s21_is_less_or_equal(s21_decimal, s21_decimal) | 
-| Greater than | > |  int s21_is_greater(s21_decimal, s21_decimal) |
-| Greater than or equal to | >= | int s21_is_greater_or_equal(s21_decimal, s21_decimal) | 
-| Equal to | == |  int s21_is_equal(s21_decimal, s21_decimal) |
-| Not equal to | != |  int s21_is_not_equal(s21_decimal, s21_decimal) |
+### Build System
+- Comprehensive Makefile with multiple targets:
+  - `all`: Complete build including library and tests
+  - `clean`: Resource cleanup
+  - `test`: Test execution and coverage verification
+  - `s21_decimal.a`: Static library compilation
+  - `gcov_report`: HTML coverage report generation
 
-Return value:
-- 0 — FALSE;
-- 1 — TRUE.
+## Key Features
 
+### Precision Management
+- Maintained exact decimal representation without floating-point errors
+- Implemented proper scaling factor handling for fractional values
+- Ensured consistent behavior across all arithmetic operations
 
-### Convertors and parsers
+### Financial Calculation Compliance
+- Banker's rounding for minimal rounding bias
+- Support for large numbers required in financial applications
+- Exact decimal arithmetic without precision loss
 
-| Convertor/parser | Function | 
-| ------ | ------ |
-| From int  | int s21_from_int_to_decimal(int src, s21_decimal *dst) |
-| From float  | int s21_from_float_to_decimal(float src, s21_decimal *dst) |
-| To int  | int s21_from_decimal_to_int(s21_decimal src, int *dst) |
-| To float  | int s21_from_decimal_to_float(s21_decimal src, float *dst) |
-
-Return value — code error:
-- 0 — OK;
-- 1 — convertation error.
-
-*Note on the conversion of a float type number:*
-- *If the numbers are too small (0 < |x| < 1e-28), return an error and value equal to 0*.
-- *If the numbers are too large (|x| > 79,228,162,514,264,337,593,543,950,335) or are equal to infinity, return an error*.
-- *When processing a number with the float type, convert all the significant decimal digits contained in it. If there are more than 7 such digits, the number is rounded to the closest one that does not have more than 7 significant decimal digits.*
-
-*Note on the conversion from decimal type to int:*
-- *If there is a fractional part in a decimal number, it should be discarded (for example, 0.9 is converted to 0)*.
-
-
-### Other functions
-
-| Description | Function                                                         | 
-| ------ |------------------------------------------------------------------|
-| Rounds a specified Decimal number to the closest integer toward negative infinity. | int s21_floor(s21_decimal value, s21_decimal *result)            |	
-| Rounds a decimal value to the nearest integer. | int s21_round(s21_decimal value, s21_decimal *result)    |
-| Returns the integral digits of the specified Decimal; any fractional digits are discarded, including trailing zeroes. | int s21_truncate(s21_decimal value, s21_decimal *result) |
-| Returns the result of multiplying the specified Decimal value by negative one. | int s21_negate(s21_decimal value, s21_decimal *result)   |
-
-Return value — code error:
-- 0 — OK;
-- 1 — calculation error.
-
-
-## Implementation of the decimal.h library functions
-
-The functions of the decimal.h library described [above](#information) must be implemented:
-- The library must be developed in C language of C11 standard using gcc compiler.
-- The library code must be located in the src folder on the develop branch.
-- Do not use outdated and legacy language constructions and library functions. Pay attention to the legacy and obsolete marks in the official documentation on the language and the libraries used. Use the POSIX.1-2017 standard.
-- When writing code it is necessary to follow the Google style.
-- Make it as a static library named *s21_decimal* (with the s21_decimal.h header file).
-- The library must be developed according to the principles of structured programming.
-- Use prefix s21_ before each function.
-- Prepare full coverage of library functions code with unit-tests using the Check library.
-- Unit tests must cover at least 80% of each function (checked using gcov).
-- Provide a Makefile for building the library and tests (with targets all, clean, test, s21_decimal.a, gcov_report).
-- The gcov_report target should generate a gcov report in the form of an html page. Unit tests must be run with gcov flags to do this.
-- When implementing decimal, stick to [the binary representation](#binary-representation) with the integer `bits` array as specified in the [example above](#example). Observe the position of the digits of a number in the `bits` array;
-- It is forbidden to use the __int128 type.
-- Trailing zeros can be as preserved as deleted (except for the `s21_truncate` function).
-- The defined type must support numbers from -79,228,162,514,264,337,593,543,950,335 to +79,228,162,514,264,337,593,543,950,335.
+### Cross-Platform Compatibility
+- Strict C11 standard compliance
+- POSIX.1-2017 compatibility
+- Google style guide adherence for code consistency
